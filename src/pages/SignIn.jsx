@@ -3,7 +3,7 @@ import { useState } from 'react'
 import {AiFillEyeInvisible,AiFillEye} from "react-icons/ai"
 import { Link } from 'react-router-dom';
 import OAuth from '../components/OAuth';
-
+import {getAuth,createUserWithEmailAndPassword} from "firebase/auth"
 
 export default function SignIn() {
   const[showPassword,setShowPassword]=useState(true)
@@ -17,7 +17,19 @@ export default function SignIn() {
     })
 
     ) 
+  
 
+  }
+  function onSubmit(e){
+    e.preventDefault() 
+    try {
+      const auth=getAuth()
+      const userCredential = createUserWithEmailAndPassword(auth,email,password)
+      const user =userCredential.user
+      console.log(user)
+    } catch (error) {
+      console.log(error)
+    }
   }
   
   const{email,password}=formData;
@@ -29,7 +41,7 @@ export default function SignIn() {
           <img src="https://images.unsplash.com/photo-1575908539614-ff89490f4a78?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1333&q=80" alt="" className='w-full rounded-2xl' />
         </div>
         <div className='w-full md:w-[67%] lg:w-[40%] lg:ml-20' >
-          <form >
+          <form onSubmit={onSubmit}>
             <input type="email"  id='email' value={email} onChange={onChange} placeholder='email address' className='mb-6 w-full px-4 py-2 text-xl text-gray-700 bg-white border-gray-300 rounded transition ease-in-out' />
             <div className='relative'>
             <input type={showPassword?'text':'password'}  id='password' value={password} onChange={onChange} placeholder='password' className='w-full px-4 py-2 text-xl text-gray-700 bg-white border-gray-300 rounded transition ease-in-out' />
