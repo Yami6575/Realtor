@@ -3,12 +3,15 @@ import { useState } from 'react'
 import {AiFillEyeInvisible,AiFillEye} from "react-icons/ai"
 import { Link } from 'react-router-dom';
 import OAuth from '../components/OAuth';
-import {getAuth,createUserWithEmailAndPassword} from "firebase/auth"
+import { signInWithEmailAndPassword,Auth, getAuth } from 'firebase/auth';
+import {toast} from "react-toastify"
+import { useNavigate } from 'react-router-dom';
 
 export default function SignIn() {
+  const navigate=useNavigate()
   const[showPassword,setShowPassword]=useState(true)
   const[formData,setFormData]=useState({
-    email:"",
+    email:"", 
     password:""
   });
   function onChange(e){
@@ -20,17 +23,20 @@ export default function SignIn() {
   
 
   }
-  function onSubmit(e){
-    e.preventDefault() 
+  async function onSubmit(e){
+    e.preventDefault()
     try {
       const auth=getAuth()
-      const userCredential = createUserWithEmailAndPassword(auth,email,password)
-      const user =userCredential.user
-      console.log(user)
+      const userCredential=await signInWithEmailAndPassword(auth,email,password)
+      if(userCredential.user){
+        navigate("/")
+      }
     } catch (error) {
-      console.log(error)
+      toast.error("bad user credentials")
     }
   }
+  
+  
   
   const{email,password}=formData;
   return (
